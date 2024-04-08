@@ -7,7 +7,11 @@ import com.anderson.address_api.core.model.Address;
 import com.anderson.address_api.core.repository.AddressRepository;
 import com.anderson.address_api.core.services.AddressService;
 import com.anderson.address_api.core.services.ConsultZipCode;
+import com.anderson.address_api.shared.exceptions.AlreadyRegisteredException;
+import com.anderson.address_api.shared.exceptions.InvalidDataException;
+import com.anderson.address_api.shared.exceptions.NotFoundException;
 
+import java.rmi.AlreadyBoundException;
 import java.util.UUID;
 
 public class AddressServiceImpl implements AddressService {
@@ -24,7 +28,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public void insert(AddressRequestDTO dto) {
         //checking if you already have an address with the same zip code and house number already registered
-        if(this.repository.findByNumberAndZipCode(dto.number(), dto.zipCode()).isPresent()) throw new RuntimeException("Address already registered !");
+        if(this.repository.findByNumberAndZipCode(dto.number(), dto.zipCode()).isPresent()) throw new AlreadyRegisteredException("Address already registered !");
 
         try {
             AddressExternalDTO dtoExternal = this.consultZipCode.getAddress(dto.zipCode());
@@ -39,13 +43,13 @@ public class AddressServiceImpl implements AddressService {
 
             this.repository.save(address);
         } catch (Exception e) {
-            throw new RuntimeException("Zip code not found !");
+            throw new InvalidDataException("Invalid zip code format !");
         }
     }
 
     @Override
     public Address findById(UUID id) {
-        Address address = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Address not found !"));
+        Address address = this.repository.findById(id).orElseThrow(() -> new NotFoundException("Address not found !"));
 
         return address;
     }
