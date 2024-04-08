@@ -36,4 +36,40 @@ public class Address {
         this.uf = dto.uf();
         this.neighborhood = dto.bairro();
     }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public String getLocality() {
+        return locality;
+    }
+
+    public String getUf() {
+        return uf;
+    }
+
+    public String getNeighborhood() {
+        return neighborhood;
+    }
+
+    public String getComplement() {
+        return complement;
+    }
+
+    public void setComplement(String complement) {
+        this.complement = complement;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
 }
