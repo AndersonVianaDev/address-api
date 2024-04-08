@@ -20,10 +20,13 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public void insert(AddressRequestDTO dto) {
+        if(this.repository.findByNumberAndZipCode(dto.number(), dto.zipCode()).isPresent()) throw new RuntimeException("Address already registered !");
+
         try {
             AddressExternalDTO dtoExternal = this.consultZipCode.getAddress(dto.zipCode());
 
             Address address = new Address(dtoExternal);
+            address.setZipCode(dto.zipCode());
             address.setNumber(dto.number());
             if(dto.complement() != null) address.setComplement(dto.complement());
 

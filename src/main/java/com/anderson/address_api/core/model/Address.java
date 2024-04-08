@@ -31,7 +31,6 @@ public class Address {
         this.updated_at = updated_at;
     }
     public Address(AddressExternalDTO dto) {
-        this.zipCode = dto.cep();
         this.locality = dto.localidade();
         this.uf = dto.uf();
         this.neighborhood = dto.bairro();
@@ -44,6 +43,8 @@ public class Address {
     public String getZipCode() {
         return zipCode;
     }
+
+    public void setZipCode(String zipCode) { this.zipCode = zipCode; }
 
     public String getLocality() {
         return locality;
