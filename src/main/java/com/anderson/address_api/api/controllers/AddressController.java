@@ -1,13 +1,13 @@
 package com.anderson.address_api.api.controllers;
 
 import com.anderson.address_api.core.dtos.AddressRequestDTO;
+import com.anderson.address_api.core.dtos.AddressResponseDTO;
 import com.anderson.address_api.core.services.AddressService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/addresses")
@@ -24,5 +24,12 @@ public class AddressController {
         this.service.insert(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/find/{id}")
+    public ResponseEntity<AddressResponseDTO> findById(@PathVariable UUID id) {
+        AddressResponseDTO dto = this.service.findById(id).toAddressResponseDTO();
+
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 }

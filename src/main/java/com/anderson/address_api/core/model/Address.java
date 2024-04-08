@@ -1,6 +1,7 @@
 package com.anderson.address_api.core.model;
 
 import com.anderson.address_api.core.dtos.AddressExternalDTO;
+import com.anderson.address_api.core.dtos.AddressResponseDTO;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -35,6 +36,11 @@ public class Address {
         this.uf = dto.uf();
         this.neighborhood = dto.bairro();
     }
+
+    public AddressResponseDTO toAddressResponseDTO() {
+        return new AddressResponseDTO(this.zipCode, this.locality, this.uf, this.neighborhood, this.complement, this.number);
+    }
+
 
     public UUID getId() {
         return id;

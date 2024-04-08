@@ -7,6 +7,8 @@ import com.anderson.address_api.core.repository.AddressRepository;
 import com.anderson.address_api.core.services.AddressService;
 import com.anderson.address_api.core.services.ConsultZipCode;
 
+import java.util.UUID;
+
 public class AddressServiceImpl implements AddressService {
 
     private final AddressRepository repository;
@@ -34,5 +36,12 @@ public class AddressServiceImpl implements AddressService {
         } catch (Exception e) {
             throw new RuntimeException("Zip code not found !");
         }
+    }
+
+    @Override
+    public Address findById(UUID id) {
+        Address address = this.repository.findById(id).orElseThrow(() -> new RuntimeException("Address not found !"));
+
+        return address;
     }
 }

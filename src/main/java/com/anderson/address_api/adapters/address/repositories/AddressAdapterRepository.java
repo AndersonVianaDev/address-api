@@ -6,6 +6,7 @@ import com.anderson.address_api.core.repository.AddressRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public class AddressAdapterRepository implements AddressRepository {
@@ -26,6 +27,13 @@ public class AddressAdapterRepository implements AddressRepository {
     @Override
     public Optional<Address> findByNumberAndZipCode(String number, String zipCode) {
         Optional<AddressAdapter> addressAdapter = this.repository.findByNumberAndZipCode(number, zipCode);
+
+        return addressAdapter.map(AddressAdapter::toAddress);
+    }
+
+    @Override
+    public Optional<Address> findById(UUID id) {
+        Optional<AddressAdapter> addressAdapter = this.repository.findById(id);
 
         return addressAdapter.map(AddressAdapter::toAddress);
     }
