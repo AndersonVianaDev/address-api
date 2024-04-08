@@ -37,4 +37,11 @@ public class AddressAdapterRepository implements AddressRepository {
 
         return addressAdapter.map(AddressAdapter::toAddress);
     }
+
+    @Override
+    public void delete(Address address) {
+        AddressAdapter addressAdapter = this.repository.findById(address.getId()).orElseThrow(() -> new RuntimeException("Address not found !"));
+
+        this.repository.delete(addressAdapter);
+    }
 }

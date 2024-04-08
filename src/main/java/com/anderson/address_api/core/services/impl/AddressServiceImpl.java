@@ -44,4 +44,13 @@ public class AddressServiceImpl implements AddressService {
 
         return address;
     }
+
+    @Override
+    public void delete(UUID id) {
+        Address address = this.findById(id);
+
+        this.repository.delete(address);
+    }
+
+
 }

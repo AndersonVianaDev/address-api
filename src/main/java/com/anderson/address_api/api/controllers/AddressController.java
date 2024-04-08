@@ -32,4 +32,11 @@ public class AddressController {
 
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        this.service.delete(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }

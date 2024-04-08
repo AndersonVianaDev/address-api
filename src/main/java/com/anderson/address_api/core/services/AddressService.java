@@ -10,4 +10,6 @@ public interface AddressService {
     void insert(AddressRequestDTO dto);
 
     Address findById(UUID id);
+
+    void delete(UUID id);
 }
