@@ -2,6 +2,7 @@ package com.anderson.address_api.api.controllers;
 
 import com.anderson.address_api.core.dtos.AddressRequestDTO;
 import com.anderson.address_api.core.dtos.AddressResponseDTO;
+import com.anderson.address_api.core.dtos.AddressUpdateDTO;
 import com.anderson.address_api.core.services.AddressService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,5 +39,12 @@ public class AddressController {
         this.service.delete(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<AddressResponseDTO> update(@PathVariable UUID id, @RequestBody AddressUpdateDTO dto) {
+        AddressResponseDTO dtoResponse = this.service.update(id, dto).toAddressResponseDTO();
+
+        return ResponseEntity.status(HttpStatus.OK).body(dtoResponse);
     }
 }

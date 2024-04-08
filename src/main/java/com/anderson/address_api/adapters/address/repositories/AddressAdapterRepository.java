@@ -44,4 +44,14 @@ public class AddressAdapterRepository implements AddressRepository {
 
         this.repository.delete(addressAdapter);
     }
+
+    @Override
+    public void update(Address address) {
+        AddressAdapter addressAdapter = this.repository.findById(address.getId()).orElseThrow(() -> new RuntimeException("Address not found !"));
+
+        addressAdapter.setComplement(address.getComplement());
+        addressAdapter.setNumber(address.getNumber());
+
+        this.repository.save(addressAdapter);
+    }
 }

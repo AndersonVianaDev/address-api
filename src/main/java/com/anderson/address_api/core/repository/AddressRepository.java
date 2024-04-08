@@ -14,4 +14,6 @@ public interface AddressRepository {
     Optional<Address> findById(UUID id);
 
     void delete(Address address);
+
+    void update(Address address);
 }

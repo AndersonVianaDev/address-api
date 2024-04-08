@@ -43,4 +43,12 @@ public class AddressAdapter {
         return new Address(this.id, this.zipCode, this.locality, this.uf, this.neighborhood, this.complement, this.number, this.created_at, this.updated_at);
     }
 
+
+    public void setComplement(String complement) {
+        this.complement = complement;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
 }
