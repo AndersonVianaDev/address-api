@@ -15,6 +15,8 @@ import com.anderson.address_api.shared.exceptions.NotFoundException;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import static com.anderson.address_api.shared.exceptions.Constants.*;
+
 public class AddressServiceImpl implements AddressService {
 
     private final AddressRepository repository;
@@ -31,10 +33,10 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public void insert(AddressRequestDTO dto) {
         //validate that there are only numeric digits and that the length is 8 digits
-        if(!ValidateZipCode.validate(dto.zipCode())) throw new InvalidDataException("Invalid zip code format !");
+        if(!ValidateZipCode.validate(dto.zipCode())) throw new InvalidDataException(INVALID_ZIP_CODE_FORMAT);
 
         //checking if you already have an address with the same zip code and house number already registered
-        if(this.repository.findByNumberAndZipCode(dto.number(), dto.zipCode()).isPresent()) throw new AlreadyRegisteredException("Address already registered !");
+        if(this.repository.findByNumberAndZipCode(dto.number(), dto.zipCode()).isPresent()) throw new AlreadyRegisteredException(ADDRESS_ALREADY_REGISTERED);
 
         try {
             AddressExternalDTO dtoExternal = this.consultZipCode.getAddress(dto.zipCode());
@@ -54,13 +56,13 @@ public class AddressServiceImpl implements AddressService {
             throw new NotFoundException(e.getMessage());
         } catch (Exception e) {
             logger.severe("Error in serialization");
-            throw new IllegalStateException("Unexpected error !");
+            throw new IllegalStateException(UNEXPECTED_ERROR);
         }
     }
 
     @Override
     public Address findById(UUID id) {
-        Address address = this.repository.findById(id).orElseThrow(() -> new NotFoundException("Address not found !"));
+        Address address = this.repository.findById(id).orElseThrow(() -> new NotFoundException(ADDRESS_NOT_FOUND));
 
         return address;
     }

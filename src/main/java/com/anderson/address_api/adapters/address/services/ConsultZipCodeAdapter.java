@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
+import static com.anderson.address_api.shared.exceptions.Constants.ZIP_CODE_DOES_NOT_EXIST;
+
 @Service
 public class ConsultZipCodeAdapter implements ConsultZipCode {
 
@@ -33,7 +35,7 @@ public class ConsultZipCodeAdapter implements ConsultZipCode {
 
         AddressExternalDTO dto = this.viaCep.getAddress(zipCode);
 
-        if(dto.cep() == null) throw new NotFoundException("Zip code does not exist !");
+        if(dto.cep() == null) throw new NotFoundException(ZIP_CODE_DOES_NOT_EXIST);
 
         jedis.setex(zipCode, EXPIRATION_TIME, objectMapper.writeValueAsString(dto));
 
