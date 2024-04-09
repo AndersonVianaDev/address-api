@@ -3,6 +3,7 @@ package com.anderson.address_api.adapters.address.services;
 import com.anderson.address_api.api.external.ViaCep;
 import com.anderson.address_api.core.dtos.AddressExternalDTO;
 import com.anderson.address_api.core.services.ConsultZipCode;
+import com.anderson.address_api.shared.exceptions.NotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
@@ -31,6 +32,8 @@ public class ConsultZipCodeAdapter implements ConsultZipCode {
         if(value != null) return objectMapper.readValue(value, AddressExternalDTO.class);
 
         AddressExternalDTO dto = this.viaCep.getAddress(zipCode);
+
+        if(dto.cep() == null) throw new NotFoundException("Zip code does not exist !");
 
         jedis.setex(zipCode, EXPIRATION_TIME, objectMapper.writeValueAsString(dto));
 

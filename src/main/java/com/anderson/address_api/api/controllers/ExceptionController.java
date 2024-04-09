@@ -42,4 +42,12 @@ public class ExceptionController {
         return ResponseEntity.status(status).body(e);
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<StandardException> illegalState(IllegalStateException exception, HttpServletRequest request) {
+        String error = "Try again later !";
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        StandardException e = new StandardException(Instant.now(), status.value(), error, exception.getMessage(), request.getRequestURI());
+
+        return ResponseEntity.status(status).body(e);
+    }
 }

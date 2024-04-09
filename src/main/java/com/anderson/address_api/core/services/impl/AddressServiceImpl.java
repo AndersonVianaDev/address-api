@@ -7,18 +7,21 @@ import com.anderson.address_api.core.model.Address;
 import com.anderson.address_api.core.repository.AddressRepository;
 import com.anderson.address_api.core.services.AddressService;
 import com.anderson.address_api.core.services.ConsultZipCode;
+import com.anderson.address_api.core.util.ValidateZipCode;
 import com.anderson.address_api.shared.exceptions.AlreadyRegisteredException;
 import com.anderson.address_api.shared.exceptions.InvalidDataException;
 import com.anderson.address_api.shared.exceptions.NotFoundException;
 
-import java.rmi.AlreadyBoundException;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public class AddressServiceImpl implements AddressService {
 
     private final AddressRepository repository;
 
     private final ConsultZipCode consultZipCode;
+
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     public AddressServiceImpl(AddressRepository repository, ConsultZipCode consultZipCode) {
         this.repository = repository;
@@ -27,6 +30,9 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public void insert(AddressRequestDTO dto) {
+        //validate that there are only numeric digits and that the length is 8 digits
+        if(!ValidateZipCode.validate(dto.zipCode())) throw new InvalidDataException("Invalid zip code format !");
+
         //checking if you already have an address with the same zip code and house number already registered
         if(this.repository.findByNumberAndZipCode(dto.number(), dto.zipCode()).isPresent()) throw new AlreadyRegisteredException("Address already registered !");
 
@@ -41,9 +47,14 @@ public class AddressServiceImpl implements AddressService {
             address.setNumber(dto.number());
             if(dto.complement() != null) address.setComplement(dto.complement());
 
+            logger.info("Saving address with zip code " + address.getZipCode() + " and house number " + address.getNumber());
             this.repository.save(address);
+        } catch (NotFoundException e) {
+            logger.severe("Zip code does not exist: " + dto.zipCode());
+            throw new NotFoundException(e.getMessage());
         } catch (Exception e) {
-            throw new InvalidDataException("Invalid zip code format !");
+            logger.severe("Error in serialization");
+            throw new IllegalStateException("Unexpected error !");
         }
     }
 
@@ -72,6 +83,5 @@ public class AddressServiceImpl implements AddressService {
 
         return address;
     }
-
 
 }
