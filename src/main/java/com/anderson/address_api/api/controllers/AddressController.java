@@ -21,10 +21,10 @@ public class AddressController {
     }
 
     @PostMapping("/insert")
-    public ResponseEntity<Void> insert(@RequestBody AddressRequestDTO dto) {
-        this.service.insert(dto);
+    public ResponseEntity<AddressResponseDTO> insert(@RequestBody AddressRequestDTO dto) {
+        AddressResponseDTO addressResponseDTO = this.service.insert(dto).toAddressResponseDTO();
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(addressResponseDTO);
     }
 
     @GetMapping("/find/{id}")

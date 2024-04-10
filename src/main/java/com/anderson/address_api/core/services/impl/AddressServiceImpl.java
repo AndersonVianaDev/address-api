@@ -31,7 +31,7 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public void insert(AddressRequestDTO dto) {
+    public Address insert(AddressRequestDTO dto) {
         //validate that there are only numeric digits and that the length is 8 digits
         if(!ValidateZipCode.validate(dto.zipCode())) throw new InvalidDataException(INVALID_ZIP_CODE_FORMAT);
 
@@ -50,7 +50,7 @@ public class AddressServiceImpl implements AddressService {
             if(dto.complement() != null) address.setComplement(dto.complement());
 
             logger.info("Saving address with zip code " + address.getZipCode() + " and house number " + address.getNumber());
-            this.repository.save(address);
+            return this.repository.save(address);
         } catch (NotFoundException e) {
             logger.severe("Zip code does not exist: " + dto.zipCode());
             throw new NotFoundException(e.getMessage());
@@ -84,9 +84,7 @@ public class AddressServiceImpl implements AddressService {
         if(!dto.number().equals(address.getNumber()) && dto.number() != null) address.setNumber(dto.number());
         if(!dto.complement().equals(address.getComplement()) && dto.complement() != null) address.setComplement(dto.complement());
 
-        this.repository.update(address);
-
-        return address;
+        return this.repository.update(address);
     }
 
 }

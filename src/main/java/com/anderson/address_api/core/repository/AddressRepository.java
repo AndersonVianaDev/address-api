@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface AddressRepository {
 
-    void save(Address address);
+    Address save(Address address);
 
     Optional<Address> findByNumberAndZipCode(String number, String zipCode);
 
@@ -15,5 +15,5 @@ public interface AddressRepository {
 
     void delete(Address address);
 
-    void update(Address address);
+    Address update(Address address);
 }

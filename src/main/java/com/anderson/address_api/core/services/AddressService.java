@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface AddressService {
 
-    void insert(AddressRequestDTO dto);
+    Address insert(AddressRequestDTO dto);
 
     Address findById(UUID id);
 

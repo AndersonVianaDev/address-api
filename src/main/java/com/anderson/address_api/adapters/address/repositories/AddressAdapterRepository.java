@@ -19,10 +19,10 @@ public class AddressAdapterRepository implements AddressRepository {
     }
 
     @Override
-    public void save(Address address) {
+    public Address save(Address address) {
         AddressAdapter addressAdapter = new AddressAdapter(address);
 
-        this.repository.save(addressAdapter);
+        return this.repository.save(addressAdapter).toAddress();
     }
 
     @Override
@@ -47,12 +47,12 @@ public class AddressAdapterRepository implements AddressRepository {
     }
 
     @Override
-    public void update(Address address) {
+    public Address update(Address address) {
         AddressAdapter addressAdapter = this.repository.findById(address.getId()).orElseThrow(() -> new NotFoundException("Address not found !"));
 
         addressAdapter.setComplement(address.getComplement());
         addressAdapter.setNumber(address.getNumber());
 
-        this.repository.save(addressAdapter);
+        return this.repository.save(addressAdapter).toAddress();
     }
 }
