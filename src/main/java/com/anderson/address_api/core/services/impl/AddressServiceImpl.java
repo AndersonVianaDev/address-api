@@ -62,7 +62,10 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Address findById(UUID id) {
-        Address address = this.repository.findById(id).orElseThrow(() -> new NotFoundException(ADDRESS_NOT_FOUND));
+        Address address = this.repository.findById(id).orElseThrow(() -> {
+            logger.severe("Address with id " + id + " not found !");
+            throw new NotFoundException(ADDRESS_NOT_FOUND);
+        });
 
         return address;
     }
