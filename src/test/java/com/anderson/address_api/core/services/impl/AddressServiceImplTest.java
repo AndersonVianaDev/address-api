@@ -7,6 +7,9 @@ import com.anderson.address_api.core.dtos.AddressUpdateDTO;
 import com.anderson.address_api.core.model.Address;
 import com.anderson.address_api.core.repository.AddressRepository;
 import com.anderson.address_api.core.services.ConsultZipCode;
+import com.anderson.address_api.shared.exceptions.AlreadyRegisteredException;
+import com.anderson.address_api.shared.exceptions.InvalidDataException;
+import com.anderson.address_api.shared.exceptions.NotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,11 +19,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.net.http.WebSocketHandshakeException;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
+import static com.anderson.address_api.shared.exceptions.Constants.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -36,10 +42,10 @@ class AddressServiceImplTest {
     private ConsultZipCode consultZipCode;
 
     @Captor
-    ArgumentCaptor<Address> addressCaptor;
+    private ArgumentCaptor<Address> addressCaptor;
 
     @Test
-    @DisplayName("Insert address successfully")
+    @DisplayName("insert address successfully")
     void insertSuccessfully() throws Exception {
         // arrange
         AddressRequestDTO dto = AddressBuilders.toAddressRequestDTO();
@@ -63,6 +69,66 @@ class AddressServiceImplTest {
     }
 
     @Test
+    @DisplayName("invalid zip code format")
+    void insertInvalidData() {
+        // arrange
+        AddressRequestDTO dto = new AddressRequestDTO("32342-23423", null, null);
+
+        // action
+        InvalidDataException exception = assertThrows(InvalidDataException.class, () -> service.insert(dto));
+
+        // assertions
+        assertEquals(INVALID_ZIP_CODE_FORMAT, exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("address already registered")
+    void insertAlreadyRegistered() {
+        // arrange
+        AddressRequestDTO dto = AddressBuilders.toAddressRequestDTO();
+        Address address = AddressBuilders.toAddress();
+
+        when(repository.findByNumberAndZipCode(dto.number(), dto.zipCode())).thenReturn(Optional.of(address));
+
+        // action
+        AlreadyRegisteredException exception = assertThrows(AlreadyRegisteredException.class, () -> service.insert(dto));
+
+        // assertions
+        assertEquals(ADDRESS_ALREADY_REGISTERED, exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("zip code does not exist")
+    void insertNotFound() throws Exception {
+        // arrange
+        AddressRequestDTO dto = AddressBuilders.toAddressRequestDTO();
+
+        when(repository.findByNumberAndZipCode(dto.number(), dto.zipCode())).thenReturn(Optional.empty());
+        when(consultZipCode.getAddress(dto.zipCode())).thenThrow(new NotFoundException(ZIP_CODE_DOES_NOT_EXIST));
+
+        // action
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> service.insert(dto));
+
+        // assertions
+        assertEquals(ZIP_CODE_DOES_NOT_EXIST, exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("unexpected error")
+    void insertIllegalState() {
+        // arrange
+        AddressRequestDTO dto = AddressBuilders.toAddressRequestDTO();
+
+        when(repository.findByNumberAndZipCode(dto.number(), dto.zipCode())).thenReturn(Optional.empty());
+
+        // action
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> service.insert(dto));
+
+        // assertions
+        assertEquals(UNEXPECTED_ERROR, exception.getMessage());
+    }
+
+    @Test
     @DisplayName("find address by id successfully")
     void findByIdSuccessfully() {
         // arrange
@@ -78,6 +144,21 @@ class AddressServiceImplTest {
         verify(repository, times(1)).findById(idAddress);
 
         assertEquals(address, addressResult);
+    }
+
+    @Test
+    @DisplayName("address not found")
+    void findByIdNotFound() {
+        // arrange
+        UUID id = UUID.randomUUID();
+
+        when(repository.findById(id)).thenReturn(Optional.empty());
+
+        // action
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> service.findById(id));
+
+        // assertions
+        assertEquals(ADDRESS_NOT_FOUND, exception.getMessage());
     }
 
     @Test
