@@ -10,9 +10,6 @@ public class StandardException {
     private String message;
     private String path;
 
-    public StandardException() {
-    }
-
     public StandardException(Instant timestamp, Integer status, String error, String message, String path) {
         this.timestamp = timestamp;
         this.status = status;

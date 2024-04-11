@@ -18,8 +18,15 @@ public class Address {
     private Instant created_at;
     private Instant updated_at;
 
-    public Address() {
+    public Address(String zipCode, String locality, String uf, String neighborhood, String complement, String number) {
+        this.zipCode = zipCode;
+        this.locality = locality;
+        this.uf = uf;
+        this.neighborhood = neighborhood;
+        this.complement = complement;
+        this.number = number;
     }
+
     public Address(UUID id, String zipCode, String locality, String uf, String neighborhood, String complement, String number, Instant created_at, Instant updated_at) {
         this.id = id;
         this.zipCode = zipCode;
