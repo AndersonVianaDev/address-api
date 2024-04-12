@@ -1,14 +1,16 @@
 # Address-API
 Bem-vindo à Address-API! 
-🌐 Esta API foi desenvolvida para lidar com informações de endereços, integrando-se à API pública de CEPs do Brasil, acessível em https://viacep.com.br/. A API foi construída para fins de prática em estrutura de código, sistema de logger, adoção de princípios de clean code e arquitetura hexagonal, aprimoramento de testes e integração com APIs externas.
+🌐 Esta API foi desenvolvida para lidar com informações de endereços, integrando-se à API pública de CEPs do Brasil, acessível em https://viacep.com.br/. A API foi construída para fins de prática em estrutura de código, praticar flyway, sistema de logger, adoção de princípios de clean code e arquitetura hexagonal, aprimoramento de testes e integração com APIs externas.
 
 A Address-API utiliza o Redis como um sistema de cache de dados. Essa escolha foi feita visando otimizar o desempenho da API, especialmente em relação à integração com a API externa de CEPs. O Redis armazena temporariamente os resultados das consultas de CEP, evitando consultas repetidas à API externa e economizando tempo de processamento. Isso melhora significativamente a velocidade de resposta da API, proporcionando uma melhor experiência para os usuários finais.
+
 ## Tecnologias Utilizadas:
 - Java 17
 - Spring Boot
 - JPA (Java Persistence API)
 - PostgreSQL
 - Redis
+- Flyway
 - OpenFeign
 - Swagger API
 - H2 (para testes)
